@@ -1,0 +1,151 @@
+তুমি যে tsconfig.json দিয়েছো, এটা আসলে TypeScript কম্পাইলারকে বলে কিভাবে তোমার কোডকে JavaScript-এ রূপান্তর করতে হবে। নিচে প্রতিটা option একদম ক্লিয়ারভাবে বুঝিয়ে দিচ্ছি 👇
+
+🔹 target: "es2022"
+
+👉 TypeScript কোড compile হয়ে কোন JavaScript version-এ যাবে সেটা নির্ধারণ করে।
+
+es2022 মানে modern JavaScript output
+এতে async/await, class fields ইত্যাদি native থাকবে (polyfill লাগবে না)
+
+📌 Example:
+
+const greet = async () => "Hello";
+
+➡️ ES2022 এ এটা প্রায় একই থাকবে (transpile কম হবে)
+
+🔹 module: "es2022"
+
+👉 কোন module system ব্যবহার হবে
+
+es2022 মানে ES Modules (import/export)
+Node.js বা modern bundler (Vite, Webpack) এর জন্য best
+
+📌 Example:
+
+import express from "express";
+🔹 moduleResolution: "bundler"
+
+👉 TypeScript কিভাবে modules resolve করবে (file খুঁজে পাবে)
+
+bundler → modern tools (Vite, esbuild, webpack) এর জন্য optimized
+এটা Node.js এর traditional resolution থেকে একটু আলাদা
+
+📌 কেন use করো?
+
+frontend বা modern backend build system থাকলে best choice
+🔹 strict: true
+
+👉 এটা সবচেয়ে important option 🔥
+
+সব strict type-checking enable করে
+যেমন:
+null/undefined check
+type mismatch error
+
+📌 Example:
+
+let name: string = null; // ❌ error
+
+➡️ bug কমায়, code safe করে
+
+🔹 noUncheckedIndexedAccess: true
+
+👉 array/object access করলে undefined handle করতে বাধ্য করে
+
+📌 Example:
+
+const arr = [1, 2, 3];
+const value = arr[5];
+
+➡️ normally: value = number
+➡️ এই option থাকলে: value = number | undefined
+
+👉 মানে তুমি ভুল index access করলে TypeScript warn করবে
+
+🔹 exactOptionalPropertyTypes: true
+
+👉 optional property (?) এর behavior strict করে
+
+📌 Example:
+
+type User = {
+  name?: string;
+};
+
+➡️ Without this:
+
+name = string | undefined
+
+➡️ With this:
+
+name = strictly undefined OR string (extra assign error ধরবে)
+
+👉 subtle bug ধরতে help করে
+
+🔹 useUnknownInCatchVariables: true
+
+👉 catch block এর error type safer করে
+
+📌 Example:
+
+try {
+  throw "error";
+} catch (err) {
+  console.log(err.message); // ❌ error
+}
+
+➡️ কারণ err = unknown
+
+👉 আগে any ছিল (unsafe)
+👉 এখন তুমি type check করতে বাধ্য:
+
+if (err instanceof Error) {
+  console.log(err.message);
+}
+🔹 skipLibCheck: true
+
+👉 node_modules এর type checking skip করে
+
+👉 কেন দরকার?
+
+performance fast হয়
+third-party library এর type error ignore করে
+
+📌 downside:
+
+কিছু hidden error miss হতে পারে
+🔹 rootDir: "src"
+
+👉 তোমার source code কোথায় আছে
+
+সব TypeScript file src folder এর ভিতরে থাকবে
+🔹 outDir: "dist"
+
+👉 compiled JavaScript কোথায় যাবে
+
+📌 Example:
+
+src/index.ts → dist/index.js
+🔹 include: ["src"]
+
+👉 কোন folder/file compile হবে
+
+এখানে শুধু src folder include করা হয়েছে
+🔥 Summary (সহজভাবে)
+
+এই config টা basically:
+
+✅ Modern JavaScript use করছে (es2022)
+✅ Strict type safety enforce করছে
+✅ Bundler-friendly setup
+✅ Clean project structure (src → dist)
+
+💡 Real-life Insight
+
+তোমার config দেখে বোঝা যাচ্ছে তুমি:
+
+production-level code লিখতে চাও
+bug minimize করতে চাও
+modern tooling (Vite / Node ESM) use করছো
+
+👉 এটা industry-level solid config 👍

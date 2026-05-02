@@ -7,11 +7,11 @@ function lenN4<T extends { length: number }>(xN4: T): number {
   return xN4.length;
 }
 
-console.log(lenN4("hello"));
-console.log(lenN4([1, 2, 3]));
-console.log(lenN4({ length: 10, tag: "ok" }));
+console.log(lenN4("hello")); // string has length
+console.log(lenN4([1, 2, 3])); // Array has length
+console.log(lenN4({ length: 10, tag: "ok" })); // object with length property
 
-// console.log(lenN4(123));
+// console.log(lenN4(123)); // ❌ number এর length নাই
 
 type UserN6 = { id: string; name: string; age?: number };
 
